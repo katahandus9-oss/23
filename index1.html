@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Перемещение объектов</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .box {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            cursor: grab;
+            border-radius: 12px;
+        }
+
+        .box1 { background: #ff6b6b; left: 50px;  top: 50px; }
+        .box2 { background: #4dabf7; left: 250px; top: 150px; }
+        .box3 { background: #51cf66; left: 450px; top: 250px; }
+    </style>
+</head>
+<body>
+
+<div class="box box1"></div>
+<div class="box box2"></div>
+<div class="box box3"></div>
+
+<script>
+    let currentBox = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    document.querySelectorAll('.box').forEach(box => {
+        box.addEventListener('mousedown', (e) => {
+            currentBox = box;
+            offsetX = e.clientX - box.offsetLeft;
+            offsetY = e.clientY - box.offsetTop;
+            box.style.cursor = 'grabbing';
+        });
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!currentBox) return;
+
+        let x = e.clientX - offsetX;
+        let y = e.clientY - offsetY;
+
+        // Ограничение перемещения в пределах окна браузера
+        const maxX = window.innerWidth - currentBox.offsetWidth;
+        const maxY = window.innerHeight - currentBox.offsetHeight;
+
+        x = Math.max(0, Math.min(x, maxX));
+        y = Math.max(0, Math.min(y, maxY));
+
+        currentBox.style.left = x + 'px';
+        currentBox.style.top = y + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (currentBox) {
+            currentBox.style.cursor = 'grab';
+            currentBox = null;
+        }
+    });
+</script>
+
+</body>
+</html>
